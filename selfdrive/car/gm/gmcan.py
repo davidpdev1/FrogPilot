@@ -10,17 +10,10 @@ from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CanBus
 def create_buttons(packer, bus, idx, button):
   values = {
     "ACCButtons": button,
-    "RollingCounter": idx,
-    "ACCAlwaysOne": 1,
-    "DistanceButton": 0,
+    "RollingCounter": idx
   }
 
-  checksum = 240 + int(values["ACCAlwaysOne"] * 0xf)
-  checksum += values["RollingCounter"] * (0x4ef if values["ACCAlwaysOne"] != 0 else 0x3f0)
-  checksum -= int(values["ACCButtons"] - 1) << 4  # not correct if value is 0
-  checksum -= 2 * values["DistanceButton"]
-
-  values["SteeringButtonChecksum"] = checksum
+  values["SteeringButtonChecksum"] = 16 - idx - button
   return packer.make_can_msg("ASCMSteeringButton", bus, values)
 
 
