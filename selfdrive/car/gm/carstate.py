@@ -26,6 +26,11 @@ class CarState(CarStateBase):
     self.pt_lka_steering_cmd_counter = 0
     self.cam_lka_steering_cmd_counter = 0
     self.buttons_counter = 0
+    self.buttons_gap = 0
+    self.buttons_gap_checksum = 0
+    self.buttons_gap_counter = 0
+    self.buttons_unknown_rolling_counter = 0
+    self.cruise_buttons = 1
 
     self.prev_distance_button = 0
     self.distance_button = 0
@@ -47,6 +52,10 @@ class CarState(CarStateBase):
       self.cruise_buttons = cam_cp.vl["ASCMSteeringButton"]["ACCButtons"]
       self.distance_button = cam_cp.vl["ASCMSteeringButton"]["DistanceButton"]
       self.buttons_counter = cam_cp.vl["ASCMSteeringButton"]["RollingCounter"]
+      self.buttons_gap = cam_cp.vl["ASCMSteeringButton"]["GapButton"]
+      self.buttons_gap_checksum = cam_cp.vl["ASCMSteeringButton"]["GapButtonChecksum"]
+      self.buttons_gap_counter = cam_cp.vl["ASCMSteeringButton"]["GapButtonRollingCounter"]
+      self.buttons_unknown_rolling_counter = cam_cp.vl["ASCMSteeringButton"]["UnkOtherRollingCounter"]
     self.pscm_status = copy.copy(pt_cp.vl["PSCMStatus"])
     # This is to avoid a fault where you engage while still moving backwards after shifting to D.
     # An Equinox has been seen with an unsupported status (3), so only check if either wheel is in reverse (2)

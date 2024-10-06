@@ -7,13 +7,20 @@ from openpilot.selfdrive.car import make_can_msg
 from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CanBus
 
 
-def create_buttons(packer, bus, idx, button):
+def create_buttons(packer, bus, ccCounter, button, gapCounter, gapButton, gapChecksum, unkRollingCounter):
   values = {
     "ACCButtons": button,
-    "RollingCounter": idx
+    "DistanceButton": gapButton > 0,
+    "GapButton": gapButton,
+    "ACCButtons": button,
+    "RollingCounter": ccCounter,
+    "UnkOtherRollingCounter": unkRollingCounter,
+    "GapButtonRollingCounter": gapCounter,
+    "RollingCounter": ccCounter,
   }
 
-  values["SteeringButtonChecksum"] = 16 - idx - button
+  values["SteeringButtonChecksum"] = 16 - ccCounter - button
+  values["GapChecksum"] = 16 - gapChecksum - gapButton
   return packer.make_can_msg("ASCMSteeringButton", bus, values)
 
 
@@ -211,7 +218,7 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators):
   # Or bus 2, since we're forwarding... but I think it does
   if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
     controller.last_button_frame = controller.frame
-    idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
-    return [create_buttons(packer, CanBus.POWERTRAIN, idx, cruiseBtn)]
+    #idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
+    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, cruiseBtn, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_gap_checksum, CS.buttons_unknown_rolling_counter)]
   else:
-    return []
+    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, CS.cruise_buttons, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_gap_checksum, CS.buttons_unknown_rolling_counter)]
