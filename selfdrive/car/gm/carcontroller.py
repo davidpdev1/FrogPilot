@@ -42,6 +42,10 @@ class CarController(CarControllerBase):
     self.cancel_counter = 0
     self.pedal_steady = 0.
 
+    self.button_press_until_frame = 0
+    self.button_to_press = 0
+    self.button_frame_counter = 0
+
     self.lka_steering_cmd_counter = 0
     self.lka_icon_status_last = (False, False)
 
@@ -203,6 +207,7 @@ class CarController(CarControllerBase):
         accel += self.accel_g
 
       if self.frame % 3 == 0:
+        self.button_frame_counter += 1
         if self.CP.flags & GMFlags.CC_LONG.value:
           if CC.longActive and CS.out.vEgo > self.CP.minEnableSpeed:
             # Using extend instead of append since the message is only sent intermittently
