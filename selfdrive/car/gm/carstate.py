@@ -44,18 +44,14 @@ class CarState(CarStateBase):
 
     self.prev_cruise_buttons = self.cruise_buttons
     self.prev_distance_button = self.distance_button
-    if self.CP.carFingerprint not in SDGM_CAR:
-      self.cruise_buttons = pt_cp.vl["ASCMSteeringButton"]["ACCButtons"]
-      self.distance_button = pt_cp.vl["ASCMSteeringButton"]["DistanceButton"]
-      self.buttons_counter = pt_cp.vl["ASCMSteeringButton"]["RollingCounter"]
-    else:
-      self.cruise_buttons = cam_cp.vl["ASCMSteeringButton"]["ACCButtons"]
-      self.distance_button = cam_cp.vl["ASCMSteeringButton"]["DistanceButton"]
-      self.buttons_counter = cam_cp.vl["ASCMSteeringButton"]["RollingCounter"]
-      self.buttons_gap = cam_cp.vl["ASCMSteeringButton"]["GapButton"]
-      self.buttons_gap_checksum = cam_cp.vl["ASCMSteeringButton"]["GapButtonChecksum"]
-      self.buttons_gap_counter = cam_cp.vl["ASCMSteeringButton"]["GapButtonRollingCounter"]
-      self.buttons_unknown_rolling_counter = cam_cp.vl["ASCMSteeringButton"]["UnkOtherRollingCounter"]
+    buttons_cp = cam_cp if self.CP.carFingerprint in SDGM_CAR else pt_cp
+    self.cruise_buttons = buttons_cp.vl["ASCMSteeringButton"]["ACCButtons"]
+    self.distance_button = buttons_cp.vl["ASCMSteeringButton"]["DistanceButton"]
+    self.buttons_counter = buttons_cp.vl["ASCMSteeringButton"]["RollingCounter"]
+    self.buttons_gap = buttons_cp.vl["ASCMSteeringButton"]["GapButton"]
+    self.buttons_gap_checksum = buttons_cp.vl["ASCMSteeringButton"]["GapButtonChecksum"]
+    self.buttons_gap_counter = buttons_cp.vl["ASCMSteeringButton"]["GapButtonRollingCounter"]
+    self.buttons_unknown_rolling_counter = buttons_cp.vl["ASCMSteeringButton"]["UnkOtherRollingCounter"]
     self.pscm_status = copy.copy(pt_cp.vl["PSCMStatus"])
     # This is to avoid a fault where you engage while still moving backwards after shifting to D.
     # An Equinox has been seen with an unsupported status (3), so only check if either wheel is in reverse (2)
