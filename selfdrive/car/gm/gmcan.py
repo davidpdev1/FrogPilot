@@ -20,7 +20,7 @@ def create_buttons(packer, bus, ccCounter, button, gapCounter, gapButton, gapChe
   }
 
   values["SteeringButtonChecksum"] = 16 - ccCounter - button
-  values["GapChecksum"] = 16 - gapChecksum - gapButton
+  values["GapChecksum"] = 16 - gapCounter - gapButton
   return packer.make_can_msg("ASCMSteeringButton", bus, values)
 
 
@@ -216,7 +216,9 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators):
 
   # Check rlogs closely - our message shouldn't show up on the pt bus for us
   # Or bus 2, since we're forwarding... but I think it does
+    idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
   if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
+    controller.last  if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
     controller.last_button_frame = controller.frame
     #idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
     return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, cruiseBtn, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_gap_checksum, CS.buttons_unknown_rolling_counter)]
