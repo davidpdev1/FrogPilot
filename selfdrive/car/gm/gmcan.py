@@ -11,6 +11,7 @@ def create_buttons(packer, bus, ccCounter, button, gapCounter, gapButton, unkRol
   values = {
     "ACCButtons": button,
     "DistanceButton": gapButton > 0,
+    # Similar to ACCButtons, might include other things? Maybe ACC on/off as well?
     "GapButton": gapButton,
     "ACCButtons": button,
     "RollingCounter": ccCounter,
@@ -220,6 +221,6 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators):
   if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
     controller.last_button_frame = controller.frame
     #idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
-    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, cruiseBtn, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_gap_checksum, CS.buttons_unknown_rolling_counter)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, cruiseBtn, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_unknown_rolling_counter)]
   else:
-    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, CS.cruise_buttons, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_gap_checksum, CS.buttons_unknown_rolling_counter)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, CS.buttons_counter, CS.cruise_buttons, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_unknown_rolling_counter)]
