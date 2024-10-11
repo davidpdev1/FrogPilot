@@ -7,21 +7,21 @@ from openpilot.selfdrive.car import make_can_msg
 from openpilot.selfdrive.car.gm.values import CAR, CruiseButtons, CanBus
 
 
-def create_buttons(packer, bus, ccCounter, button, gapCounter, gapButton, unkRollingCounter):
+def create_buttons(packer, bus, counter, button, gapButton):
   values = {
     "ACCButtons": button,
     "DistanceButton": gapButton != 1,
     # Similar to ACCButtons, might include other things? Maybe ACC on/off as well?
     "GapButton": gapButton,
     "ACCButtons": button,
-    "RollingCounter": ccCounter,
-    "UnkOtherRollingCounter": unkRollingCounter,
-    "GapButtonRollingCounter": gapCounter,
-    "RollingCounter": ccCounter,
+    "RollingCounter": counter,
+    "UnkOtherRollingCounter": counter,
+    "GapButtonRollingCounter": counter,
+    "RollingCounter": counter,
   }
 
-  values["SteeringButtonChecksum"] = 16 - ccCounter - button
-  values["GapButtonChecksum"] = 16 - gapCounter - gapButton
+  values["SteeringButtonChecksum"] = 16 - counter - button
+  values["GapButtonChecksum"] = 16 - counter - gapButton
   return packer.make_can_msg("ASCMSteeringButton", bus, values)
 
 
@@ -219,11 +219,11 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators):
   # Or bus 2, since we're forwarding... but I think it does
   idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
   if controller.button_frame_counter < controller.button_press_until_frame:
-    return [create_buttons(packer, CanBus.POWERTRAIN, idx, controller.button_to_press, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_unknown_rolling_counter)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, idx, controller.button_to_press, CS.buttons_gap)]
   if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
     controller.last_button_frame = controller.frame
     controller.button_to_press = cruiseBtn
     controller.button_press_until_frame = controller.button_frame_counter + 4
-    return [create_buttons(packer, CanBus.POWERTRAIN, idx, cruiseBtn, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_unknown_rolling_counter)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, idx, cruiseBtn, CS.buttons_gap)]
   else:
-    return [create_buttons(packer, CanBus.POWERTRAIN, idx, CS.cruise_buttons, CS.buttons_gap_counter, CS.buttons_gap, CS.buttons_unknown_rolling_counter)]
+    return [create_buttons(packer, CanBus.POWERTRAIN, idx, CS.cruise_buttons, CS.buttons_gap)]
