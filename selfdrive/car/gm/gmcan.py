@@ -220,7 +220,7 @@ def create_gm_cc_spam_command(packer, controller, CS, actuators):
   idx = (CS.buttons_counter + 1) % 4  # Need to predict the next idx for '22-23 EUV
   if controller.button_frame_counter < controller.button_press_until_frame:
     return [create_buttons(packer, CanBus.POWERTRAIN, idx, controller.button_to_press, CS.buttons_gap)]
-  if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate):
+  if (cruiseBtn != CruiseButtons.INIT) and ((controller.frame - controller.last_button_frame) * DT_CTRL > rate) and ((controller.button_frame_counter - controller.button_press_until_frame) > 3):
     controller.last_button_frame = controller.frame
     controller.button_to_press = cruiseBtn
     controller.button_press_until_frame = controller.button_frame_counter + 4
