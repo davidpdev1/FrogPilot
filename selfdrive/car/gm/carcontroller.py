@@ -45,6 +45,7 @@ class CarController(CarControllerBase):
     self.button_press_until_frame = 0
     self.button_to_press = 0
     self.button_frame_counter = 0
+    self.last_buttons_counter = 0
 
     self.lka_steering_cmd_counter = 0
     self.lka_icon_status_last = (False, False)
@@ -206,7 +207,9 @@ class CarController(CarControllerBase):
         # to keep accel steady for logs when not sending gas
         accel += self.accel_g
 
-      if self.frame % 3 == 0:
+
+      if self.last_buttons_counter != CS.buttons_counter:
+        self.last_buttons_counter = CS.buttons_counter
         self.button_frame_counter += 1
         if self.CP.flags & GMFlags.CC_LONG.value:
           if CC.longActive and CS.out.vEgo > self.CP.minEnableSpeed:
