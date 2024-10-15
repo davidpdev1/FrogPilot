@@ -456,6 +456,7 @@ struct PandaState @0xa7649e2575e4591e {
   ignitionLine @2 :Bool;
   rxBufferOverflow @7 :UInt32;
   txBufferOverflow @8 :UInt32;
+  gmlanSendErrs @9 :UInt32;
   pandaType @10 :PandaType;
   ignitionCan @13 :Bool;
   faultStatus @15 :FaultStatus;
@@ -503,7 +504,7 @@ struct PandaState @0xa7649e2575e4591e {
     interruptRateCan2 @3;
     interruptRateCan3 @4;
     interruptRateTach @5;
-    interruptRateGmlanDEPRECATED @6;
+    interruptRateGmlan @6;
     interruptRateInterrupts @7;
     interruptRateSpiDma @8;
     interruptRateSpiCs @9;
@@ -589,7 +590,6 @@ struct PandaState @0xa7649e2575e4591e {
   gasInterceptorDetectedDEPRECATED @4 :Bool;
   startedSignalDetectedDEPRECATED @5 :Bool;
   hasGpsDEPRECATED @6 :Bool;
-  gmlanSendErrsDEPRECATED @9 :UInt32;
   fanSpeedRpmDEPRECATED @11 :UInt16;
   usbPowerModeDEPRECATED @12 :PeripheralState.UsbPowerModeDEPRECATED;
   safetyParamDEPRECATED @20 :Int16;

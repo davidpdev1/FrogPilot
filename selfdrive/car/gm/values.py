@@ -261,6 +261,7 @@ class CanBus:
   OBSTACLE = 1
   CAMERA = 2
   CHASSIS = 2
+  SW_GMLAN = 3
   LOOPBACK = 128
   DROPPED = 192
 
